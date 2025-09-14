@@ -26,6 +26,29 @@ class TaskService {
   static getTasksByUser(userId) {
     return tasks.filter(t => t.userId === userId);
   }
+
+  static updateTask(taskId, updates) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) {
+      throw new Error('Tarefa não encontrada');
+    }
+    // Atualiza apenas os campos fornecidos em updates
+    Object.keys(updates).forEach(key => {
+      if (key !== 'id' && key in task) {
+        task[key] = updates[key];
+      }
+    });
+    return task;
+  }
+
+  static deleteTask(taskId) {
+    const index = tasks.findIndex(t => t.id === taskId);
+    if (index === -1) {
+      throw new Error('Tarefa não encontrada');
+    }
+    const deleted = tasks.splice(index, 1);
+    return deleted[0];
+  }
 }
 
 module.exports = TaskService;

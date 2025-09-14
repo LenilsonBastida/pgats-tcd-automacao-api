@@ -33,9 +33,33 @@ router.post('/', authMiddleware, (req, res) => {
 });
 
 // Consulta de tarefas do usuário
+
 router.get('/', authMiddleware, (req, res) => {
   const tasks = TaskService.getTasksByUser(req.userId);
   res.json(tasks);
+});
+
+// Atualização de tarefa
+router.put('/:id', authMiddleware, (req, res) => {
+  const taskId = parseInt(req.params.id);
+  const updates = req.body;
+  try {
+    const updatedTask = TaskService.updateTask(taskId, updates);
+    res.json(updatedTask);
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+// Remoção de tarefa
+router.delete('/:id', authMiddleware, (req, res) => {
+  const taskId = parseInt(req.params.id);
+  try {
+    const deletedTask = TaskService.deleteTask(taskId);
+    res.json(deletedTask);
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
 });
 
 module.exports = router;

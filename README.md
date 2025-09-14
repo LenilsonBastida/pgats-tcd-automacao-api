@@ -38,12 +38,22 @@ http://localhost:3000/api-docs
   - Body: `{ "username": "string", "password": "string" }`
   - Retorna: `{ "token": "..." }`
 
+
 ### Cadastro de tarefa
 - `POST /api/tasks` (requer token Bearer)
   - Body: `{ "title": "string", "description": "string", "priority": "baixa|media|alta", "dueDate": "YYYY-MM-DDTHH:mm:ssZ" }`
 
 ### Consulta de tarefas
 - `GET /api/tasks` (requer token Bearer)
+
+### Alteração de tarefa
+- `PUT /api/tasks/:id` (requer token Bearer)
+  - Body: `{ "title": "string", "description": "string", "priority": "baixa|media|alta", "dueDate": "YYYY-MM-DDTHH:mm:ssZ" }`
+  - Exemplo: `PUT /api/tasks/1`
+
+### Remoção de tarefa
+- `DELETE /api/tasks/:id` (requer token Bearer)
+  - Exemplo: `DELETE /api/tasks/1`
 
 ## Regras de negócio
 - Não é permitido registrar usuários duplicados.
