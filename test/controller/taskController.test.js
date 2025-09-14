@@ -14,9 +14,11 @@ describe('Tasks Controller', () => {
             await request(app)
                 .post('/api/users/register')
                 .send({ username: 'sinonuser', password: 'sinonpass' });
+
             const loginRes = await request(app)
                 .post('/api/users/login')
                 .send({ username: 'sinonuser', password: 'sinonpass' });
+
             const token = loginRes.body.token;
 
             const resposta = await request(app)
@@ -28,6 +30,7 @@ describe('Tasks Controller', () => {
                     priority: "baixa",
                     dueDate: new Date().toISOString()
                 });
+
             expect(resposta.status).to.equal(400);
             stub.restore();
         });
@@ -41,31 +44,33 @@ describe('Tasks Controller', () => {
                     priority: "baixa",
                     dueDate: new Date().toISOString()
                 });
+
             expect(resposta.status).to.equal(401);
         });
 
         it('Deve retornar 201 ao criar tarefa válida', async () => {
-                await request(app)
-                    .post('/api/users/register')
-                    .send({ username: 'testuser', password: 'testpass' });
+            await request(app)
+                .post('/api/users/register')
+                .send({ username: 'testuser', password: 'testpass' });
 
-                const loginRes = await request(app)
-                    .post('/api/users/login')
-                    .send({ username: 'testuser', password: 'testpass' });
-                const token = loginRes.body.token;
+            const loginRes = await request(app)
+                .post('/api/users/login')
+                .send({ username: 'testuser', password: 'testpass' });
 
-                const resposta = await request(app)
-                    .post('/api/tasks')
-                    .set('Authorization', `Bearer ${token}`)
-                    .send({
-                        title: "Estudar Automação de testes na Camada de Serviço (API)",
-                        description: "Fazer exercícios de Mocha e Chai",
-                        priority: "baixa",
-                        dueDate: new Date().toISOString()
-                    });
+            const token = loginRes.body.token;
 
-                expect(resposta.status).to.equal(201);
-            });
+            const resposta = await request(app)
+                .post('/api/tasks')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    title: "Estudar Automação de testes na Camada de Serviço (API)",
+                    description: "Fazer exercícios de Mocha e Chai",
+                    priority: "baixa",
+                    dueDate: new Date().toISOString()
+                });
+                
+            expect(resposta.status).to.equal(201);
+        });
     });
 
     describe('PUT /api/tasks/:id', () => {
@@ -75,9 +80,11 @@ describe('Tasks Controller', () => {
             await request(app)
                 .post('/api/users/register')
                 .send({ username: 'sinonput', password: 'sinonputpass' });
+
             const loginRes = await request(app)
                 .post('/api/users/login')
                 .send({ username: 'sinonput', password: 'sinonputpass' });
+
             const token = loginRes.body.token;
 
             const updateRes = await request(app)
@@ -88,6 +95,7 @@ describe('Tasks Controller', () => {
                     description: "Descrição",
                     priority: "baixa"
                 });
+
             expect(updateRes.status).to.equal(404);
             stub.restore();
         });
@@ -100,7 +108,7 @@ describe('Tasks Controller', () => {
             const loginRes = await request(app)
                 .post('/api/users/login')
                 .send({ username: 'putuser2', password: 'putpass2' });
-                
+
             const token = loginRes.body.token;
 
             const updateRes = await request(app)
@@ -111,43 +119,46 @@ describe('Tasks Controller', () => {
                     description: "Descrição",
                     priority: "baixa"
                 });
+
             expect(updateRes.status).to.equal(404);
         });
 
         it('Deve retornar 200 ao atualizar tarefa existente', async () => {
-                await request(app)
-                    .post('/api/users/register')
-                    .send({ username: 'putuser', password: 'putpass' });
+            await request(app)
+                .post('/api/users/register')
+                .send({ username: 'putuser', password: 'putpass' });
 
-                const loginRes = await request(app)
-                    .post('/api/users/login')
-                    .send({ username: 'putuser', password: 'putpass' });
-                const token = loginRes.body.token;
+            const loginRes = await request(app)
+                .post('/api/users/login')
+                .send({ username: 'putuser', password: 'putpass' });
 
-                const createRes = await request(app)
-                    .post('/api/tasks')
-                    .set('Authorization', `Bearer ${token}`)
-                    .send({
-                        title: "Tarefa original",
-                        description: "Descrição original",
-                        priority: "media",
-                        dueDate: new Date().toISOString()
-                    });
-                const taskId = createRes.body.id;
+            const token = loginRes.body.token;
 
-                const updateRes = await request(app)
-                    .put(`/api/tasks/${taskId}`)
-                    .set('Authorization', `Bearer ${token}`)
-                    .send({
-                        title: "Tarefa atualizada",
-                        description: "Descrição alterada",
-                        priority: "alta"
-                    });
+            const createRes = await request(app)
+                .post('/api/tasks')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    title: "Tarefa original",
+                    description: "Descrição original",
+                    priority: "media",
+                    dueDate: new Date().toISOString()
+                });
+                
+            const taskId = createRes.body.id;
 
-                expect(updateRes.status).to.equal(200);
-                expect(updateRes.body.title).to.equal("Tarefa atualizada");
-                expect(updateRes.body.description).to.equal("Descrição alterada");
-                expect(updateRes.body.priority).to.equal("alta");
+            const updateRes = await request(app)
+                .put(`/api/tasks/${taskId}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    title: "Tarefa atualizada",
+                    description: "Descrição alterada",
+                    priority: "alta"
+                });
+
+            expect(updateRes.status).to.equal(200);
+            expect(updateRes.body.title).to.equal("Tarefa atualizada");
+            expect(updateRes.body.description).to.equal("Descrição alterada");
+            expect(updateRes.body.priority).to.equal("alta");
         });
     });
 
