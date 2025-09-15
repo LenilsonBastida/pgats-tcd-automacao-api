@@ -47,17 +47,43 @@ http://localhost:3000/api-docs
 - `GET /api/tasks` (requer token Bearer)
 
 ### Alteração de tarefa
-- `PUT /api/tasks/:id` (requer token Bearer)
   - Body: `{ "title": "string", "description": "string", "priority": "baixa|media|alta", "dueDate": "YYYY-MM-DDTHH:mm:ssZ" }`
   - Exemplo: `PUT /api/tasks/1`
 
 ### Remoção de tarefa
-- `DELETE /api/tasks/:id` (requer token Bearer)
   - Exemplo: `DELETE /api/tasks/1`
 
 ## Regras de negócio
-- Não é permitido registrar usuários duplicados.
-- Login exige usuário e senha.
+
+## Testes Automatizados
+
+O projeto possui testes automatizados para os principais endpoints (POST, PUT, DELETE) e cenários negativos (autenticação, erros do service, id inexistente), utilizando Mocha, Chai, Supertest e Sinon.
+
+Para rodar os testes localmente:
+
+```bash
+npm test
+```
+
+## Integração Contínua (CI)
+
+Ao realizar push ou pull request para o branch `main`, uma pipeline do GitHub Actions executa automaticamente os testes do projeto. O arquivo de configuração está em `.github/workflows/nodejs-ci.yml`.
+
+## Exemplos de respostas
+
+### Sucesso
+- Cadastro de tarefa: status 201, retorna objeto da tarefa criada
+- Atualização de tarefa: status 200, retorna objeto atualizado
+- Remoção de tarefa: status 200, retorna objeto removido
+
+### Erros comuns
+- 400: Dados inválidos ou erro do service
+- 401: Token não informado ou inválido
+- 404: Tarefa não encontrada
+
+## Observações
+- O banco de dados é em memória, reiniciado a cada execução.
+- O Swagger foi atualizado para incluir todos os métodos (POST, GET, PUT, DELETE) de tarefas.
 - Cada tarefa é vinculada ao usuário autenticado.
 - Tarefas de prioridade "alta" não podem ter prazo superior a 7 dias da data de criação.
 
