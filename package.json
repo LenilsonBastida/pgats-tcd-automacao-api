@@ -14,12 +14,15 @@
   "description": "Esta API permite registrar usuários, realizar login, cadastrar tarefas e consultar tarefas vinculadas ao usuário autenticado. O banco de dados é em memória, ideal para aprendizado de testes e automação de APIs.",
   "main": "app.js",
   "scripts": {
-    "test": "mocha \"test/**/*.js\" --timeout 10000",
-    "test-external": "mocha \"test/external/**/*.js\" --timeout 10000",
-    "test-controller": "mocha \"test/controller/**/*.js\" --timeout 10000",
+    "test": "mocha \"test/**/*.js\" --timeout 10000 --reporter mochawesome",
+    "test-external": "mocha \"test/external/**/*.js\" --timeout 10000 --reporter mochawesome",
+    "test-controller": "mocha \"test/controller/**/*.js\" --timeout 10000 --reporter mochawesome",
     "start": "node server.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mochawesome": "^7.1.4"
+  }
 }
