@@ -15,6 +15,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha \"test/**/*.js\" --timeout 10000",
+    "test-external": "mocha \"test/external/**/*.js\" --timeout 10000",
+    "test-controller": "mocha \"test/controller/**/*.js\" --timeout 10000",
     "start": "node server.js"
   },
   "keywords": [],
