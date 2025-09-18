@@ -1,10 +1,29 @@
-const request = require('supertest');
-const { expect } = require('chai');
-
 describe('Tasks', () => {
+    const request = require('supertest');
+    const { expect } = require('chai');
+
+    const BASE_URL = 'http://localhost:3000';
+
+    async function registerAndLogin(username, password) {
+        await request(BASE_URL)
+            .post('/api/users/register')
+            .send({ username, password });
+        const loginRes = await request(BASE_URL)
+            .post('/api/users/login')
+            .send({ username, password });
+        return loginRes.body.token;
+    }
+
+    async function createTask(token, data) {
+        return await request(BASE_URL)
+            .post('/api/tasks')
+            .set('Authorization', `Bearer ${token}`)
+            .send(data);
+    }
+
     describe('POST /tasks', () => {
         it('Deve retornar 401 se não enviar token', async () => {
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(BASE_URL)
                 .post('/api/tasks')
                 .send({
                     title: "Teste sem token",
@@ -14,47 +33,29 @@ describe('Tasks', () => {
                 });
 
             expect(resposta.status).to.equal(401);
-            expect(resposta.body).to.have.property('error', 'Token não informado')
+            expect(resposta.body).to.have.property('error', 'Token não informado');
         });
 
         it('Deve retornar 201 ao criar tarefa válida', async () => {
-            await request('http://localhost:3000')
-                .post('/api/users/register')
-                .send({ username: 'testuser', password: 'testpass' });
+            const token = await registerAndLogin('testuser', 'testpass');
+            const resposta = await createTask(token, {
+                title: "Estudar Automação de testes na Camada de Serviço (API)",
+                description: "Fazer exercícios de Mocha e Chai",
+                priority: "baixa",
+                dueDate: new Date().toISOString()
+            });
 
-            const loginRes = await request('http://localhost:3000')
-                .post('/api/users/login')
-                .send({ username: 'testuser', password: 'testpass' });
-
-            const token = loginRes.body.token;
-
-            const resposta = await request('http://localhost:3000')
-                .post('/api/tasks')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    title: "Estudar Automação de testes na Camada de Serviço (API)",
-                    description: "Fazer exercícios de Mocha e Chai",
-                    priority: "baixa",
-                    dueDate: new Date().toISOString()
-                });
-                
             expect(resposta.status).to.equal(201);
+            expect(resposta.body).to.have.property('title', 'Estudar Automação de testes na Camada de Serviço (API)');
+            expect(resposta.body).to.have.property('description', 'Fazer exercícios de Mocha e Chai');
+            expect(resposta.body).to.have.property('priority', 'baixa');
         });
     });
 
     describe('PUT /api/tasks/:id', () => {
         it('Deve retornar 404 ao tentar atualizar tarefa inexistente', async () => {
-            await request('http://localhost:3000')
-                .post('/api/users/register')
-                .send({ username: 'putuser2', password: 'putpass2' });
-
-            const loginRes = await request('http://localhost:3000')
-                .post('/api/users/login')
-                .send({ username: 'putuser2', password: 'putpass2' });
-
-            const token = loginRes.body.token;
-
-            const updateRes = await request('http://localhost:3000')
+            const token = await registerAndLogin('putuser2', 'putpass2');
+            const updateRes = await request(BASE_URL)
                 .put(`/api/tasks/9999`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -67,29 +68,16 @@ describe('Tasks', () => {
         });
 
         it('Deve retornar 200 ao atualizar tarefa existente', async () => {
-            await request('http://localhost:3000')
-                .post('/api/users/register')
-                .send({ username: 'putuser', password: 'putpass' });
+            const token = await registerAndLogin('putuser', 'putpass');
+            const createRes = await createTask(token, {
+                title: "Tarefa original",
+                description: "Descrição original",
+                priority: "media",
+                dueDate: new Date().toISOString()
+            });
 
-            const loginRes = await request('http://localhost:3000')
-                .post('/api/users/login')
-                .send({ username: 'putuser', password: 'putpass' });
-
-            const token = loginRes.body.token;
-
-            const createRes = await request('http://localhost:3000')
-                .post('/api/tasks')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    title: "Tarefa original",
-                    description: "Descrição original",
-                    priority: "media",
-                    dueDate: new Date().toISOString()
-                });
-                
             const taskId = createRes.body.id;
-
-            const updateRes = await request('http://localhost:3000')
+            const updateRes = await request(BASE_URL)
                 .put(`/api/tasks/${taskId}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -107,58 +95,32 @@ describe('Tasks', () => {
 
     describe('DELETE /api/tasks/:id', () => {
         it('Deve retornar 401 se não enviar token', async () => {
-            await request('http://localhost:3000')
-                .post('/api/users/register')
-                .send({ username: 'deleteuser2', password: 'deletepass2' });
-
-            const loginRes = await request('http://localhost:3000')
-                .post('/api/users/login')
-                .send({ username: 'deleteuser2', password: 'deletepass2' });
-
-            const token = loginRes.body.token;
-
-            const createRes = await request('http://localhost:3000')
-                .post('/api/tasks')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    title: "Tarefa para deletar sem token",
-                    description: "Descrição delete",
-                    priority: "baixa",
-                    dueDate: new Date().toISOString()
-                });
+            const token = await registerAndLogin('deleteuser2', 'deletepass2');
+            const createRes = await createTask(token, {
+                title: "Tarefa para deletar sem token",
+                description: "Descrição delete",
+                priority: "baixa",
+                dueDate: new Date().toISOString()
+            });
 
             const taskId = createRes.body.id;
-
-            const deleteRes = await request('http://localhost:3000')
+            const deleteRes = await request(BASE_URL)
                 .delete(`/api/tasks/${taskId}`);
 
             expect(deleteRes.status).to.equal(401);
         });
-    
+
         it('Deve retornar 200 ao remover tarefa existente', async () => {
-            await request('http://localhost:3000')
-                .post('/api/users/register')
-                .send({ username: 'deleteuser', password: 'deletepass' });
-
-            const loginRes = await request('http://localhost:3000')
-                .post('/api/users/login')
-                .send({ username: 'deleteuser', password: 'deletepass' });
-
-            const token = loginRes.body.token;
-
-            const createRes = await request('http://localhost:3000')
-                .post('/api/tasks')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    title: "Tarefa para deletar",
-                    description: "Descrição delete",
-                    priority: "baixa",
-                    dueDate: new Date().toISOString()
-                });
+            const token = await registerAndLogin('deleteuser', 'deletepass');
+            const createRes = await createTask(token, {
+                title: "Tarefa para deletar",
+                description: "Descrição delete",
+                priority: "baixa",
+                dueDate: new Date().toISOString()
+            });
 
             const taskId = createRes.body.id;
-
-            const deleteRes = await request('http://localhost:3000')
+            const deleteRes = await request(BASE_URL)
                 .delete(`/api/tasks/${taskId}`)
                 .set('Authorization', `Bearer ${token}`);
 
