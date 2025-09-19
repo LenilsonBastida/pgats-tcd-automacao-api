@@ -2,6 +2,30 @@
 
 Esta API permite registrar usuários, realizar login, cadastrar tarefas e consultar tarefas vinculadas ao usuário autenticado. O banco de dados é em memória, ideal para aprendizado de testes e automação de APIs.
 
+## API GraphQL
+
+Esta aplicação também expõe uma interface GraphQL utilizando Apollo Server.
+
+### Como executar a API GraphQL
+
+1. Instale as dependências necessárias:
+  ```bash
+  npm install apollo-server-express express graphql
+  ```
+2. Execute o servidor GraphQL:
+  ```bash
+  node graphql/server.js
+  ```
+3. Acesse o playground em: [http://localhost:4000/graphql](http://localhost:4000/graphql)
+
+### Estrutura da pasta `graphql`
+- `app.js`: Configuração do ApolloServer e Express
+- `server.js`: Inicialização do servidor
+- `schema.js`: Definição do schema GraphQL
+- `resolvers.js`: Implementação dos resolvers
+
+Para testes automatizados, importe o `app` de `graphql/app.js`.
+
 ## Instalação
 
 1. Clone o repositório ou baixe os arquivos.
@@ -93,3 +117,28 @@ Para testar com Supertest, importe o `app.js` diretamente em seus testes.
 ---
 
 API desenvolvida para fins educacionais e automação de testes.
+
+# API GraphQL
+
+Esta API GraphQL expõe os serviços de Task e User utilizando Apollo Server e Express.
+
+## Como executar
+
+1. Instale as dependências:
+  ```bash
+  npm install apollo-server-express express graphql
+  ```
+2. Execute o servidor GraphQL:
+  ```bash
+  node graphql/server.js
+  ```
+3. Acesse o playground em: [http://localhost:4000/graphql](http://localhost:4000/graphql)
+
+## Estrutura
+- `graphql/app.js`: Configuração do ApolloServer e Express
+- `graphql/server.js`: Inicialização do servidor
+- `graphql/schema.js`: Definição do schema GraphQL
+- `graphql/resolvers.js`: Implementação dos resolvers
+
+## Testes
+Para testar a API GraphQL com Supertest, importe o `app` de `graphql/app.js`.

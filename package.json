@@ -1,8 +1,11 @@
 {
   "dependencies": {
+    "@apollo/server": "^5.0.0",
+    "apollo-server-express": "^3.13.0",
     "bcryptjs": "^3.0.2",
     "chai": "^4.5.0",
-    "express": "^5.1.0",
+    "express": "^4.18.2",
+    "graphql": "^16.11.0",
     "jsonwebtoken": "^9.0.2",
     "mocha": "^11.7.2",
     "sinon": "^21.0.0",
@@ -17,7 +20,8 @@
     "test": "mocha \"test/**/*.js\" --timeout 10000 --reporter mochawesome",
     "test-external": "mocha \"test/external/**/*.js\" --timeout 10000 --reporter mochawesome",
     "test-controller": "mocha \"test/controller/**/*.js\" --timeout 10000 --reporter mochawesome",
-    "start": "node server.js"
+    "start": "node server.js",
+    "start-graphql": "node graphql/server.js"
   },
   "keywords": [],
   "author": "",
