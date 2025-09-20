@@ -9,7 +9,13 @@ const resolvers = {
     user: (_, { id }) => userService.getUserById(id),
   },
   Mutation: {
-    createTask: (_, { title }) => taskService.createTask(title),
+    createTask: (_, { title }) => taskService.createTask(
+      null, // userId
+      title,
+      '', // description
+      'baixa', // priority
+      new Date().toISOString() // dueDate
+    ),
     updateTask: (_, { id, completed }) => taskService.updateTask(id, completed),
     deleteTask: (_, { id }) => taskService.deleteTask(id),
     createUser: (_, { name, email }) => userService.createUser(name, email),

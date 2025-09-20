@@ -1,4 +1,4 @@
-describe('Tasks', () => {
+describe('Tasks External REST', () => {
     const request = require('supertest');
     const { expect } = require('chai');
 

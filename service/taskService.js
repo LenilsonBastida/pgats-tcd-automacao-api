@@ -1,6 +1,9 @@
 const { tasks } = require('../model/data');
 
 class TaskService {
+  static getAllTasks() {
+    return Array.isArray(tasks) ? tasks : [];
+  }
   static createTask(userId, title, description, priority, dueDate) {
     const createdAt = new Date();
     if (priority === 'alta') {
@@ -17,6 +20,7 @@ class TaskService {
       description,
       priority,
       dueDate,
+      completed: false,
       createdAt
     };
     tasks.push(task);

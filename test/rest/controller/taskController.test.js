@@ -1,10 +1,10 @@
-describe('Tasks Controller', () => {
+describe('Tasks Controller REST', () => {
     const request = require('supertest');
     const sinon = require('sinon');
     const { expect } = require('chai');
 
-    const TaskService = require('../../service/taskService');
-    const app = require('../../app');
+    const TaskService = require('../../../service/taskService');
+    const app = require('../../../app');
 
     async function registerAndLogin(username, password) {
         await request(app)

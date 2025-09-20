@@ -2,6 +2,9 @@ const { users } = require('../model/data');
 const bcrypt = require('bcryptjs');
 
 class UserService {
+  static getAllUsers() {
+    return Array.isArray(users) ? users : [];
+  }
   static register(username, password) {
     if (users.find(u => u.username === username)) {
       throw new Error('Usuário já existe');
