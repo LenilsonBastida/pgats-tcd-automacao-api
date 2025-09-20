@@ -14,28 +14,31 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v3
 
-    - name: Configurar Node.js
-      uses: actions/setup-node@v3
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20.x'
 
     - name: Instalar dependências
       run: npm install
 
-    - name: Executar todos os testes locais
-      run: npm test
+    - name: Executar os testes de API REST via Controller
+      run: npm run test-rest-controller
 
+    - name: Executar os testes de API GraphQL via Controller
+      run: npm run test-graphql-controller
+      
     - name: Subir API REST
-      run: nohup npm start &
+      run: npm run start-rest &
 
     - name: Subir API GraphQL
-      run: nohup node graphql/server.js &
+      run: npm run start-graphql & 
 
     - name: Esperar servidores estarem funcionando
-      run: sleep 10
+      run: sleep 8
 
-    - name: Executar testes externos REST
-      run: npm run test-external
+    - name: Executar testes externos de API REST
+      run: npm run test-rest-external
 
-    - name: Executar testes externos GraphQL
+    - name: Executar testes externos de API GraphQL
       run: npm run test-graphql-external
