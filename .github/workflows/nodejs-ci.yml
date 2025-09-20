@@ -25,7 +25,7 @@ jobs:
     - name: Executar todos os testes locais
       run: npm test
 
-        - name: Subir API REST
+    - name: Subir API REST
       run: nohup npm start &
 
     - name: Subir API GraphQL
