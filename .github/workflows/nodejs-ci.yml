@@ -25,14 +25,14 @@ jobs:
     - name: Executar todos os testes locais
       run: npm test
 
-    - name: Subir API REST
+        - name: Subir API REST
       run: nohup npm start &
 
     - name: Subir API GraphQL
       run: nohup node graphql/server.js &
 
     - name: Esperar servidores estarem funcionando
-      run: sleep 8
+      run: sleep 10
 
     - name: Executar testes externos REST
       run: npm run test-external
